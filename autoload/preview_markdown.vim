@@ -25,12 +25,15 @@ function! preview_markdown#preview() abort
     return
   endif
 
-  call term_start('mdr', {
+  let opt = {
         \ 'in_io': 'file',
         \ 'in_name': tmp,
         \ 'exit_cb': function('s:remove_tmp', [tmp]),
+        \ 'vertical': get(g:, 'preview_markdown_vertical', 0),
         \ 'term_finish': 'close',
-        \ })
+        \ }
+
+  call term_start('mdr', opt)
 endfunction
 
 function! s:remove_tmp(tmp, channel, msg) abort
