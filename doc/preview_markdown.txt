@@ -60,6 +60,10 @@ COMMANDS					*preview_markdown-commands*
 ------------------------------------------------------------------------------
 FUNCTIONS					*preview_markdown-functions*
 
+OPTIONS						*preview_markdown-options*
+g:preview_markdown_vertical
+	If you wan to open window vertical, please set value to 1.
+
 ==============================================================================
 TODO						*preview_markdown-todo*
 

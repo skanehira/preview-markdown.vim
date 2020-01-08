@@ -6,7 +6,7 @@ This is vim plugin that can preview markdown in Vim terminal.
 ## Requirements
 - [MichaelMure/mdr](https://github.com/MichaelMure/mdr)
 
-## Instllation
+## Installation
 e.g dein.vim
 
 ```toml
@@ -18,6 +18,11 @@ repo = 'skanehira/preview-markdown.vim'
 ```vim
 :PreviewMarkdown
 ```
+
+## Options
+| option                        | description                            |
+|-------------------------------|----------------------------------------|
+| `g:preview_markdown_vertical` | open window vartical when value is `1` |
 
 ## Author
 skanehira
