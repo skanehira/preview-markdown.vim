@@ -7,7 +7,7 @@ set cpo&vim
 
 function! s:echo_err(msg) abort
   echohl ErrorMsg
-  echom 'preview-markdown.vim: ' .. a:msg
+  echom 'preview-markdown.vim: ' . a:msg
   echohl None
 endfunction
 
@@ -16,7 +16,7 @@ function! preview_markdown#preview() abort
   call writefile(getline(1, "$"), tmp)
 
   if !executable('mdr')
-    call s:echo_err('not found mdr, please insatll from https://github.com/MichaelMure/mdr')
+    call s:echo_err('mdr not found, please install from https://github.com/MichaelMure/mdr')
     return
   endif
 
