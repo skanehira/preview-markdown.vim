@@ -4,7 +4,7 @@ This is vim plugin that can preview markdown in Vim terminal.
 ![](https://i.imgur.com/ME5HBWP.png)
 
 ## Requirements
-- [MichaelMure/mdr](https://github.com/MichaelMure/mdr)
+- [MichaelMure/mdr](https://github.com/MichaelMure/mdr) or specified markdown parser
 
 ## Installation
 e.g dein.vim
