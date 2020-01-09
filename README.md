@@ -20,9 +20,10 @@ repo = 'skanehira/preview-markdown.vim'
 ```
 
 ## Options
-| option                        | description                            |
-|-------------------------------|----------------------------------------|
-| `g:preview_markdown_vertical` | open window vartical when value is `1` |
+| option                        | description                                               |
+|-------------------------------|-----------------------------------------------------------|
+| `g:preview_markdown_vertical` | open window vartical when value is `1`                    |
+| `g:preview_markdown_parser`   | use specified command to parse markdown, default is `mdr` |
 
 ## Author
 skanehira
