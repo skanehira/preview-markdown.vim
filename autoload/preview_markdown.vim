@@ -31,7 +31,7 @@ function! preview_markdown#preview() abort
     return
   endif
 
-  if !has('terminal')
+  if !has('terminal') && !has('nvim')
     call s:echo_err('this version doesn''t support terminal')
     return
   endif
@@ -47,7 +47,12 @@ function! preview_markdown#preview() abort
     let opt['term_finish'] = 'close'
   endif
 
-  call term_start(parser, opt)
+  if has('nvim')
+    vnew
+    call termopen('mdr ' . tmp, {'on_exit': function('s:remove_tmp', [tmp])})
+  else
+    call term_start(parser, opt)
+  endif
 endfunction
 
 function! s:remove_tmp(tmp, channel, msg) abort
