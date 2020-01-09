@@ -15,8 +15,14 @@ function! preview_markdown#preview() abort
   let tmp = tempname()
   call writefile(getline(1, "$"), tmp)
 
-  if !executable('mdr')
-    call s:echo_err('mdr not found, please install from https://github.com/MichaelMure/mdr')
+  let parser = get(g:, 'preview_markdown_parser', 'mdr')
+
+  if !executable(parser)
+    if parser is 'mdr'
+      call s:echo_err('mdr not found, please install from https://github.com/MichaelMure/mdr')
+    else
+      call s:echo_err(printf('%s not found, please install %s', parser, parser))
+    endif
     return
   endif
 
@@ -30,10 +36,13 @@ function! preview_markdown#preview() abort
         \ 'in_name': tmp,
         \ 'exit_cb': function('s:remove_tmp', [tmp]),
         \ 'vertical': get(g:, 'preview_markdown_vertical', 0),
-        \ 'term_finish': 'close',
         \ }
 
-  call term_start('mdr', opt)
+  if parser is 'mdr'
+    let opt['term_finish'] = 'close'
+  endif
+
+  call term_start(parser, opt)
 endfunction
 
 function! s:remove_tmp(tmp, channel, msg) abort
