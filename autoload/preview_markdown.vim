@@ -17,7 +17,7 @@ function! preview_markdown#preview() abort
       return
   endif
 
-  let tmp = tempname()
+  let tmp = tempname() . '.md'
   call writefile(getline(1, "$"), tmp)
 
   let parser = get(g:, 'preview_markdown_parser', 'mdr')
