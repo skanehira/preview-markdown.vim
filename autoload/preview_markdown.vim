@@ -36,26 +36,37 @@ function! preview_markdown#preview() abort
     return
   endif
 
-  let opt = {
-        \ 'in_io': 'file',
-        \ 'in_name': tmp,
-        \ 'exit_cb': function('s:remove_tmp', [tmp]),
-        \ 'vertical': get(g:, 'preview_markdown_vertical', 0),
-        \ }
-
-  if parser is 'mdr'
-    let opt['term_finish'] = 'close'
-  endif
-
   if has('nvim')
     vnew
-    call termopen('mdr ' . tmp, {'on_exit': function('s:remove_tmp', [tmp])})
+
+    let opt = {
+          \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
+          \ }
+
+    let cmd = printf("%s %s", parser, tmp)
+
+    call termopen(cmd, opt)
   else
+    let opt = {
+          \ 'in_io': 'file',
+          \ 'in_name': tmp,
+          \ 'exit_cb': function('s:remove_tmp', [tmp]),
+          \ 'vertical': get(g:, 'preview_markdown_vertical', 0),
+          \ }
+
+    if parser is 'mdr'
+      let opt['term_finish'] = 'close'
+    endif
+
     call term_start(parser, opt)
   endif
 endfunction
 
 function! s:remove_tmp(tmp, channel, msg) abort
+  call delete(a:tmp)
+endfunction
+
+function! s:remove_tmp_on_nvim(tmp, id, exit_code, type) abort
   call delete(a:tmp)
 endfunction
 
