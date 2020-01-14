@@ -37,7 +37,11 @@ function! preview_markdown#preview() abort
   endif
 
   if has('nvim')
-    vnew
+    if get(g:, 'preview_markdown_vertical', 0) is 1
+      vnew
+    else
+      new
+    endif
 
     let opt = {
           \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
