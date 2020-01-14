@@ -13,8 +13,8 @@ endfunction
 
 function! preview_markdown#preview() abort
   if wordcount().bytes is 0
-      call s:echo_err('current buffer is empty')
-      return
+    call s:echo_err('current buffer is empty')
+    return
   endif
 
   let tmp = tempname() . '.md'
@@ -31,26 +31,46 @@ function! preview_markdown#preview() abort
     return
   endif
 
-  if !has('terminal')
+  if !has('terminal') && !has('nvim')
     call s:echo_err('this version doesn''t support terminal')
     return
   endif
 
-  let opt = {
-        \ 'in_io': 'file',
-        \ 'in_name': tmp,
-        \ 'exit_cb': function('s:remove_tmp', [tmp]),
-        \ 'vertical': get(g:, 'preview_markdown_vertical', 0),
-        \ }
+  if has('nvim')
+    if get(g:, 'preview_markdown_vertical', 0) is 1
+      vnew
+    else
+      new
+    endif
 
-  if parser is 'mdr'
-    let opt['term_finish'] = 'close'
+    let opt = {
+          \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
+          \ }
+
+    let cmd = printf("%s %s", parser, tmp)
+
+    call termopen(cmd, opt)
+  else
+    let opt = {
+          \ 'in_io': 'file',
+          \ 'in_name': tmp,
+          \ 'exit_cb': function('s:remove_tmp', [tmp]),
+          \ 'vertical': get(g:, 'preview_markdown_vertical', 0),
+          \ }
+
+    if parser is 'mdr'
+      let opt['term_finish'] = 'close'
+    endif
+
+    call term_start(parser, opt)
   endif
-
-  call term_start(parser, opt)
 endfunction
 
 function! s:remove_tmp(tmp, channel, msg) abort
+  call delete(a:tmp)
+endfunction
+
+function! s:remove_tmp_on_nvim(tmp, id, exit_code, type) abort
   call delete(a:tmp)
 endfunction
 
