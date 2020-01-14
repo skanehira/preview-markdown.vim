@@ -13,8 +13,8 @@ endfunction
 
 function! preview_markdown#preview() abort
   if wordcount().bytes is 0
-      call s:echo_err('current buffer is empty')
-      return
+    call s:echo_err('current buffer is empty')
+    return
   endif
 
   let tmp = tempname()
