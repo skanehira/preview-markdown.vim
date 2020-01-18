@@ -5,6 +5,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let s:preview_buf_name = 'PREVIEW'
+
 function! s:echo_err(msg) abort
   echohl ErrorMsg
   echom 'preview-markdown.vim: ' . a:msg
@@ -23,11 +25,7 @@ function! preview_markdown#preview() abort
   let parser = get(g:, 'preview_markdown_parser', 'mdr')
 
   if !executable(parser)
-    if parser is 'mdr'
-      call s:echo_err('mdr not found, please install from https://github.com/MichaelMure/mdr')
-    else
-      call s:echo_err(printf('%s not found, please install %s', parser, parser))
-    endif
+    call s:echo_err(printf('%s not found, please install %s', parser, parser))
     return
   endif
 
@@ -36,16 +34,14 @@ function! preview_markdown#preview() abort
     return
   endif
 
+  let is_vert = get(g:, 'preview_markdown_vertical', 0)
+
   if has('nvim')
-    if get(g:, 'preview_markdown_vertical', 0) is 1
+    if is_vert
       vnew
     else
       new
     endif
-
-    let opt = {
-          \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
-          \ }
 
     let cmd = printf("%s %s", parser, tmp)
 
@@ -54,25 +50,60 @@ function! preview_markdown#preview() abort
     let opt = {
           \ 'in_io': 'file',
           \ 'in_name': tmp,
-          \ 'exit_cb': function('s:remove_tmp', [tmp]),
-          \ 'vertical': get(g:, 'preview_markdown_vertical', 0),
+          \ 'hidden': 1,
+          \ 'curwin': 1,
+          \ 'term_finish': 'open',
+          \ 'term_kill': 'kill',
+          \ 'term_name': s:preview_buf_name,
+          \ 'term_opencmd': is_vert ? 'vnew|b %d' : 'new|b %d',
           \ }
 
-    if parser is 'mdr'
-      let opt['term_finish'] = 'close'
+    if bufexists(s:preview_buf_name)
+      let winid = bufwinid(s:preview_buf_name)
+      if winid is# -1
+        if is_vert
+          execute 'vnew | b' s:preview_buf_name
+        else
+          execute 'new | b' s:preview_buf_name
+        endif
+      else
+        call win_gotoid(winid)
+      endif
+    else
+      if is_vert
+        execute 'vnew' s:preview_buf_name
+      else
+        execute 'new' s:preview_buf_name
+      endif
+      nnoremap <buffer> <silent> q :bw!<CR>
+    endif
+
+    let jobid = term_getjob(bufnr())
+    if jobid isnot# v:null
+      call job_stop(jobid)
+      redraw
     endif
 
     call term_start(parser, opt)
   endif
+
+  " delete tmp file
+  call delete(tmp)
 endfunction
 
-function! s:remove_tmp(tmp, channel, msg) abort
-  call delete(a:tmp)
-endfunction
+augroup AutoPreviewMarkdown
+  au!
+  autocmd BufWritePre * if &ft is# 'markdown' | call s:auto_preview() | endif
 
-function! s:remove_tmp_on_nvim(tmp, id, exit_code, type) abort
-  call delete(a:tmp)
-endfunction
+  function! s:auto_preview() abort
+    if get(g:, 'preview_markdown_auto', 0) |
+      " if preview buffer showing in window
+      if bufwinid(s:preview_buf_name) isnot# -1
+        call preview_markdown#preview()
+      endif
+    endif
+  endfunction
+augroup END
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
