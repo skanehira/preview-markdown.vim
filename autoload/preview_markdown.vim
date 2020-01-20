@@ -5,7 +5,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:preview_buf_name = 'PREVIEW'
+let s:preview_buf_nr = -1
 
 function! s:echo_err(msg) abort
   echohl ErrorMsg
@@ -54,28 +54,27 @@ function! preview_markdown#preview() abort
           \ 'curwin': 1,
           \ 'term_finish': 'open',
           \ 'term_kill': 'kill',
-          \ 'term_name': s:preview_buf_name,
+          \ 'term_name': 'PREVIEW',
           \ 'term_opencmd': is_vert ? 'vnew|b %d' : 'new|b %d',
           \ }
 
-    if bufexists(s:preview_buf_name)
-      let winid = bufwinid(s:preview_buf_name)
+    if bufexists(s:preview_buf_nr)
+      let winid = bufwinid(s:preview_buf_nr)
       if winid is# -1
         if is_vert
-          execute 'vnew | b' s:preview_buf_name
+          execute 'vnew'
         else
-          execute 'new | b' s:preview_buf_name
+          execute 'new'
         endif
       else
         call win_gotoid(winid)
       endif
     else
       if is_vert
-        execute 'vnew' s:preview_buf_name
+        execute 'vnew'
       else
-        execute 'new' s:preview_buf_name
+        execute 'new'
       endif
-      nnoremap <buffer> <silent> q :bw!<CR>
     endif
 
     let jobid = term_getjob(bufnr())
@@ -84,7 +83,7 @@ function! preview_markdown#preview() abort
       redraw
     endif
 
-    call term_start(parser, opt)
+    let s:preview_buf_nr = term_start(parser, opt)
   endif
 
   " delete tmp file
@@ -98,7 +97,7 @@ augroup AutoUpdatePreviewMarkdown
   function! s:auto_preview() abort
     if get(g:, 'preview_markdown_auto_update', 0) |
       " if preview buffer showing in window
-      if bufwinid(s:preview_buf_name) isnot# -1
+      if bufwinid(s:preview_buf_nr) isnot# -1
         call preview_markdown#preview()
       endif
     endif
