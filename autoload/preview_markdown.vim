@@ -91,12 +91,12 @@ function! preview_markdown#preview() abort
   call delete(tmp)
 endfunction
 
-augroup AutoPreviewMarkdown
+augroup AutoUpdatePreviewMarkdown
   au!
   autocmd BufWritePre * if &ft is# 'markdown' | call s:auto_preview() | endif
 
   function! s:auto_preview() abort
-    if get(g:, 'preview_markdown_auto', 0) |
+    if get(g:, 'preview_markdown_auto_update', 0) |
       " if preview buffer showing in window
       if bufwinid(s:preview_buf_name) isnot# -1
         call preview_markdown#preview()
