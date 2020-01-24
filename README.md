@@ -20,11 +20,13 @@ repo = 'skanehira/preview-markdown.vim'
 ```
 
 ## Options
-| option                           | description                                                       |
-|----------------------------------|-------------------------------------------------------------------|
-| `g:preview_markdown_vertical`    | open window vartical when value is `1`                            |
-| `g:preview_markdown_parser`      | use specified command to parse markdown, default is `mdr`         |
-| `g:preview_markdown_auto_update` | update preview window when write to buffer, default is disable(0) |
+| option                           | description                                                             |
+|----------------------------------|-------------------------------------------------------------------------|
+| `g:preview_markdown_vertical`    | open window vartical when value is `1`                                  |
+| `g:preview_markdown_parser`      | use specified command to parse markdown, default is `mdr`               |
+| `g:preview_markdown_auto_update` | update preview window when write to buffer. This unstill support Neovim |
+
+
 
 ## Markdown parser
 - [MichaelMure/mdr](https://github.com/MichaelMure/mdr)
