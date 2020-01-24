@@ -62,11 +62,16 @@ FUNCTIONS					*preview_markdown-functions*
 
 OPTIONS						*preview_markdown-options*
 
-g:preview_markdown_vertical			*preview_markdown_vertical*
+g:preview_markdown_vertical			*g:preview_markdown_vertical*
 	If you want to open window vertical, please set value to 1.
 
-g:preview_markdown_parser			*preview_markdown_parser*
+g:preview_markdown_parser			*g:preview_markdown_parser*
 	You can use specified command to parse markdown, default is 'mdr'
+
+g:preview_markdown_auto_update			*g:preview_markdown_auto_update*
+	If you want to auto update preview window
+	when you write to buffer, please set value to 1.
+	NOTE: This unstill support Neovim.
 
 ==============================================================================
 TODO						*preview_markdown-todo*
