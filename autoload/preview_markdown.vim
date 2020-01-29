@@ -80,6 +80,15 @@ function! preview_markdown#preview() abort
     let jobid = term_getjob(bufnr())
     if jobid isnot# v:null
       call job_stop(jobid)
+      let c = 0
+      while job_status(jobid) is# 'run'
+        if c > 5
+          call s:echo_err('stop job is timeout')
+          return
+        endif
+        sleep 1m
+        let c += 1
+      endwhile
       redraw
     endif
 
