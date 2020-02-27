@@ -13,6 +13,10 @@ function! s:echo_err(msg) abort
   echohl None
 endfunction
 
+function! s:remove_tmp_on_nvim(tmp, id, exit_code, type) abort
+  call delete(a:tmp)
+endfunction
+
 function! preview_markdown#preview() abort
   if wordcount().bytes is 0
     call s:echo_err('current buffer is empty')
@@ -45,7 +49,11 @@ function! preview_markdown#preview() abort
 
     let cmd = printf("%s %s", parser, tmp)
 
-    call termopen(cmd, opt)
+    let opt = {
+      \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
+      \ }
+
+    let s:preview_buf_nr = termopen(cmd, opt)
   else
     let opt = {
           \ 'in_io': 'file',
@@ -93,10 +101,8 @@ function! preview_markdown#preview() abort
     endif
 
     let s:preview_buf_nr = term_start(parser, opt)
+    call delete(tmp)
   endif
-
-  " delete tmp file
-  call delete(tmp)
 endfunction
 
 augroup AutoUpdatePreviewMarkdown
