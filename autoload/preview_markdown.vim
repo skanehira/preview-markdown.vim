@@ -85,7 +85,7 @@ function! preview_markdown#preview() abort
       endif
     endif
 
-    let jobid = term_getjob(bufnr())
+    let jobid = term_getjob(bufnr('%'))
     if jobid isnot# v:null
       call job_stop(jobid)
       let c = 0
