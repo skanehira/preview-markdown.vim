@@ -39,6 +39,8 @@ function! preview_markdown#preview() abort
   endif
 
   let is_vert = get(g:, 'preview_markdown_vertical', 0)
+  
+  let cmd = printf("%s %s", parser, tmp)
 
   if has('nvim')
     if is_vert
@@ -47,7 +49,6 @@ function! preview_markdown#preview() abort
       new
     endif
 
-    let cmd = printf("%s %s", parser, tmp)
 
     let opt = {
       \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
@@ -100,8 +101,7 @@ function! preview_markdown#preview() abort
       redraw
     endif
 
-    let s:preview_buf_nr = term_start(parser, opt)
-    call delete(tmp)
+    let s:preview_buf_nr = term_start(cmd, opt)
   endif
 endfunction
 
