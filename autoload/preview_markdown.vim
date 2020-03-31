@@ -17,6 +17,10 @@ function! s:remove_tmp_on_nvim(tmp, id, exit_code, type) abort
   call delete(a:tmp)
 endfunction
 
+function! s:remove_tmp(tmp, channel, msg) abort
+  call delete(a:tmp)
+endfunction
+
 function! preview_markdown#preview() abort
   if wordcount().bytes is 0
     call s:echo_err('current buffer is empty')
@@ -63,6 +67,7 @@ function! preview_markdown#preview() abort
           \ 'term_kill': 'kill',
           \ 'term_name': 'PREVIEW',
           \ 'term_opencmd': is_vert ? 'vnew|b %d' : 'new|b %d',
+	      \ 'exit_cb': function('s:remove_tmp', [tmp]),
           \ }
 
     if bufexists(s:preview_buf_nr)
@@ -101,8 +106,6 @@ function! preview_markdown#preview() abort
 
     let s:preview_buf_nr = term_start(cmd, opt)
 	
-	sleep 1
-    call delete(tmp)
   endif
 endfunction
 
