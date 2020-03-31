@@ -100,7 +100,8 @@ function! preview_markdown#preview() abort
     endif
 
     let s:preview_buf_nr = term_start(cmd, opt)
-
+	
+	sleep 1
     call delete(tmp)
   endif
 endfunction
