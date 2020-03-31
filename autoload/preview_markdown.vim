@@ -57,8 +57,6 @@ function! preview_markdown#preview() abort
     let s:preview_buf_nr = termopen(cmd, opt)
   else
     let opt = {
-          \ 'in_io': 'file',
-          \ 'in_name': tmp,
           \ 'hidden': 1,
           \ 'curwin': 1,
           \ 'term_finish': 'open',
@@ -102,6 +100,8 @@ function! preview_markdown#preview() abort
     endif
 
     let s:preview_buf_nr = term_start(cmd, opt)
+
+    call delete(tmp)
   endif
 endfunction
 
