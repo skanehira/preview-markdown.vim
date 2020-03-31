@@ -67,7 +67,7 @@ function! preview_markdown#preview() abort
           \ 'term_kill': 'kill',
           \ 'term_name': 'PREVIEW',
           \ 'term_opencmd': is_vert ? 'vnew|b %d' : 'new|b %d',
-	      \ 'exit_cb': function('s:remove_tmp', [tmp]),
+          \ 'exit_cb': function('s:remove_tmp', [tmp]),
           \ }
 
     if bufexists(s:preview_buf_nr)
