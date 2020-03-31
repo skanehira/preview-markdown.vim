@@ -17,6 +17,10 @@ function! s:remove_tmp_on_nvim(tmp, id, exit_code, type) abort
   call delete(a:tmp)
 endfunction
 
+function! s:remove_tmp(tmp, channel, msg) abort
+  call delete(a:tmp)
+endfunction
+
 function! preview_markdown#preview() abort
   if wordcount().bytes is 0
     call s:echo_err('current buffer is empty')
@@ -39,6 +43,8 @@ function! preview_markdown#preview() abort
   endif
 
   let is_vert = get(g:, 'preview_markdown_vertical', 0)
+  
+  let cmd = printf("%s %s", parser, tmp)
 
   if has('nvim')
     if is_vert
@@ -47,7 +53,6 @@ function! preview_markdown#preview() abort
       new
     endif
 
-    let cmd = printf("%s %s", parser, tmp)
 
     let opt = {
       \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
@@ -56,14 +61,13 @@ function! preview_markdown#preview() abort
     let s:preview_buf_nr = termopen(cmd, opt)
   else
     let opt = {
-          \ 'in_io': 'file',
-          \ 'in_name': tmp,
           \ 'hidden': 1,
           \ 'curwin': 1,
           \ 'term_finish': 'open',
           \ 'term_kill': 'kill',
           \ 'term_name': 'PREVIEW',
           \ 'term_opencmd': is_vert ? 'vnew|b %d' : 'new|b %d',
+          \ 'exit_cb': function('s:remove_tmp', [tmp]),
           \ }
 
     if bufexists(s:preview_buf_nr)
@@ -100,8 +104,8 @@ function! preview_markdown#preview() abort
       redraw
     endif
 
-    let s:preview_buf_nr = term_start(parser, opt)
-    call delete(tmp)
+    let s:preview_buf_nr = term_start(cmd, opt)
+	
   endif
 endfunction
 
