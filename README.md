@@ -11,7 +11,7 @@ This is vim plugin that can preview markdown in Vim terminal.
 e.g dein.vim
 
 ```toml
-[[plugin]]
+[[plugins]]
 repo = 'skanehira/preview-markdown.vim'
 ```
 
