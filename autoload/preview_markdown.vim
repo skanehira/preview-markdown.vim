@@ -21,6 +21,23 @@ function! s:remove_tmp(tmp, channel, msg) abort
   call delete(a:tmp)
 endfunction
 
+function! s:stop_job() abort
+  let s:jobid = term_getjob(bufnr('%'))
+  if s:jobid isnot# v:null
+    call job_stop(s:jobid)
+    let c = 0
+    while job_status(s:jobid) is# 'run'
+      if c > 5
+        call s:echo_err('stop job is timeout')
+        return
+      endif
+      sleep 1m
+      let c += 1
+    endwhile
+    redraw
+  endif
+endfunction
+
 function! preview_markdown#preview() abort
   if wordcount().bytes is 0
     call s:echo_err('current buffer is empty')
@@ -43,7 +60,7 @@ function! preview_markdown#preview() abort
   endif
 
   let is_vert = get(g:, 'preview_markdown_vertical', 0)
-  
+
   let cmd = printf("%s %s", parser, tmp)
 
   if has('nvim')
@@ -52,7 +69,6 @@ function! preview_markdown#preview() abort
     else
       new
     endif
-
 
     let opt = {
       \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
@@ -89,23 +105,9 @@ function! preview_markdown#preview() abort
       endif
     endif
 
-    let jobid = term_getjob(bufnr('%'))
-    if jobid isnot# v:null
-      call job_stop(jobid)
-      let c = 0
-      while job_status(jobid) is# 'run'
-        if c > 5
-          call s:echo_err('stop job is timeout')
-          return
-        endif
-        sleep 1m
-        let c += 1
-      endwhile
-      redraw
-    endif
-
+    call s:stop_job()
     let s:preview_buf_nr = term_start(cmd, opt)
-	
+    tnoremap <buffer> <silent> q <C-w>:bw! \| call <SID>stop_job()<CR>
   endif
 endfunction
 
