@@ -40,7 +40,7 @@ INTRODUCTION					*preview_markdown-introduction*
 *preview_markdown* is a Vim plugin
 
 Latest version:
-https://github.com/skanehira/preview_markdown.vim
+https://github.com/skanehira/preview-markdown.vim
 
 
 ==============================================================================
