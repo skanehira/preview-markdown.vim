@@ -107,7 +107,7 @@ function! preview_markdown#preview() abort
 
     call s:stop_job()
     let s:preview_buf_nr = term_start(cmd, opt)
-    tnoremap <buffer> <silent> q <C-w>:bw! \| call <SID>stop_job()<CR>
+    exe printf('tnoremap <buffer> <silent> q %s:bw! \| call <SID>stop_job()<CR>', &termwinkey ? &termwinkey : '<C-w>')
   endif
 endfunction
 
