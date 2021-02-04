@@ -51,7 +51,7 @@ function! preview_markdown#preview() abort
   let bin = split(parser,' ')[0]
 
   if !executable(bin)
-    call s:echo_err(printf('%s not found, please install %s', parser, bin))
+    call s:echo_err(printf('%s not found, please install %s', bin, bin))
     return
   endif
 
