@@ -48,9 +48,10 @@ function! preview_markdown#preview() abort
   call writefile(getline(1, "$"), tmp)
 
   let parser = get(g:, 'preview_markdown_parser', 'mdr')
+  let bin = split(parser,' ')[0]
 
-  if !executable(parser)
-    call s:echo_err(printf('%s not found, please install %s', parser, parser))
+  if !executable(bin)
+    call s:echo_err(printf('%s not found, please install %s', bin, bin))
     return
   endif
 
