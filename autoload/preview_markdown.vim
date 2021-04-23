@@ -38,7 +38,45 @@ function! s:stop_job() abort
   endif
 endfunction
 
-function! preview_markdown#preview() abort
+let s:args = ['left', 'right', 'top', 'bottom']
+let s:arg_to_excmd = {
+      \ 'left': 'leftabove',
+      \ 'right': 'rightbelow',
+      \ 'top': 'topleft',
+      \ 'bottom': 'botright',
+      \ }
+
+function! preview_markdown#complete(arg, cmd, pos) abort
+  if a:arg is# ''
+    return s:args
+  endif
+  return filter(copy(s:args), printf('v:val =~# "^%s"', a:arg))
+endfunction
+
+function! s:to_excmd(args) abort
+  let excmd = 'vnew'
+  let arg = a:args[0]
+
+  if len(a:args) is 0
+    return excmd
+  endif
+
+  try
+    let open = s:arg_to_excmd[arg]
+  catch
+    return excmd
+  endtry
+
+  if arg is# 'right' || arg is# 'left'
+    let excmd = printf('%s vnew', open)
+  else
+    let excmd = printf('%s new', open)
+  endif
+
+  return excmd
+endfunction
+
+function! preview_markdown#preview(...) abort
   if wordcount().bytes is 0
     call s:echo_err('current buffer is empty')
     return
@@ -60,16 +98,11 @@ function! preview_markdown#preview() abort
     return
   endif
 
-  let is_vert = get(g:, 'preview_markdown_vertical', 0)
-
+  let opencmd = s:to_excmd(a:000)
   let cmd = printf("%s %s", parser, tmp)
 
   if has('nvim')
-    if is_vert
-      vnew
-    else
-      new
-    endif
+    execute opencmd
 
     let opt = {
       \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
@@ -83,27 +116,19 @@ function! preview_markdown#preview() abort
           \ 'term_finish': 'open',
           \ 'term_kill': 'kill',
           \ 'term_name': 'PREVIEW',
-          \ 'term_opencmd': is_vert ? 'vnew|b %d' : 'new|b %d',
+          \ 'term_opencmd': printf('%s|b %%d', opencmd),
           \ 'exit_cb': function('s:remove_tmp', [tmp]),
           \ }
 
     if bufexists(s:preview_buf_nr)
       let winid = bufwinid(s:preview_buf_nr)
       if winid is# -1
-        if is_vert
-          execute 'vnew'
-        else
-          execute 'new'
-        endif
+        execute opencmd
       else
         call win_gotoid(winid)
       endif
     else
-      if is_vert
-        execute 'vnew'
-      else
-        execute 'new'
-      endif
+        execute opencmd
     endif
 
     call s:stop_job()

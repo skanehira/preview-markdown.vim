@@ -10,7 +10,7 @@ let g:loaded_preview_markdown = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-command! PreviewMarkdown call preview_markdown#preview()
+command! -nargs=? -complete=customlist,preview_markdown#complete PreviewMarkdown call preview_markdown#preview(<f-args>)
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
