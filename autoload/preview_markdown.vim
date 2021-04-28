@@ -55,11 +55,11 @@ endfunction
 
 function! s:to_excmd(args) abort
   let excmd = 'vnew'
-  let arg = a:args[0]
-
   if len(a:args) is 0
     return excmd
   endif
+
+  let arg = a:args[0]
 
   try
     let open = s:arg_to_excmd[arg]
