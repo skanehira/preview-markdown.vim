@@ -61,11 +61,7 @@ function! s:to_excmd(args) abort
 
   let arg = a:args[0]
 
-  try
-    let open = s:arg_to_excmd[arg]
-  catch
-    return excmd
-  endtry
+  let open = s:arg_to_excmd[arg]
 
   if arg is# 'right' || arg is# 'left'
     let excmd = printf('%s vnew', open)
