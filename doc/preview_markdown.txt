@@ -62,9 +62,6 @@ FUNCTIONS					*preview_markdown-functions*
 
 OPTIONS						*preview_markdown-options*
 
-g:preview_markdown_vertical			*g:preview_markdown_vertical*
-	If you want to open window vertical, please set value to 1.
-
 g:preview_markdown_parser			*g:preview_markdown_parser*
 	You can use specified command to parse markdown, default is 'mdr'
 
