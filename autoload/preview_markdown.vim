@@ -38,12 +38,13 @@ function! s:stop_job() abort
   endif
 endfunction
 
-let s:args = ['left', 'right', 'top', 'bottom']
+let s:args = ['left', 'right', 'top', 'bottom','tab']
 let s:arg_to_excmd = {
       \ 'left': 'leftabove',
       \ 'right': 'rightbelow',
       \ 'top': 'topleft',
       \ 'bottom': 'botright',
+      \ 'tab': 'tabnew',
       \ }
 
 function! preview_markdown#complete(arg, cmd, pos) abort
@@ -65,6 +66,8 @@ function! s:to_excmd(args) abort
 
   if arg is# 'right' || arg is# 'left'
     let excmd = printf('%s vnew', open)
+  elseif arg is# 'tab'
+    let excmd = printf('%s tabnew', open)
   else
     let excmd = printf('%s new', open)
   endif
