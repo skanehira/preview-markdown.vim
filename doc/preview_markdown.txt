@@ -48,14 +48,22 @@ USAGE						*preview_markdown-usage*
 
 
 
-==============================================================================
+
 INTERFACE					*preview_markdown-interface*
 
 ------------------------------------------------------------------------------
 COMMANDS					*preview_markdown-commands*
 
-:PreviewMarkdown				*:PreviewMarkdown*
+:PreviewMarkdown {opner}				*:PreviewMarkdown*
 	Use Vim terminal to preview markdown.
+	One of the following value is available for the {opener}:
+
+	"tab"		Open a preview by |tabnew|
+	left"		Open a preview by |leftabove|
+	right"  	Open a preview by |rightbelow|
+	top"   		Open a preview by |topleft|
+	bottom"		Open a preview by |botright|
+
 
 ------------------------------------------------------------------------------
 FUNCTIONS					*preview_markdown-functions*
