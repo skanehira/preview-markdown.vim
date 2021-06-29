@@ -17,7 +17,7 @@ repo = 'skanehira/preview-markdown.vim'
 
 ## Usage
 ```vim
-:PreviewMarkdown [left|top|right|bottom]
+:PreviewMarkdown [left|top|right|bottom|tab]
 ```
 
 ## Options
