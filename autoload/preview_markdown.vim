@@ -6,6 +6,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let s:preview_buf_nr = -1
+let s:preview_job_id = -1
 
 function! s:echo_err(msg) abort
   echohl ErrorMsg
@@ -22,19 +23,29 @@ function! s:remove_tmp(tmp, channel, msg) abort
 endfunction
 
 function! s:stop_job() abort
-  let s:jobid = term_getjob(bufnr('%'))
-  if s:jobid isnot# v:null
-    call job_stop(s:jobid)
-    let c = 0
-    while job_status(s:jobid) is# 'run'
-      if c > 5
-        call s:echo_err('stop job is timeout')
-        return
+  if has('nvim')
+    let s:jobid = s:preview_job_id
+    if s:jobid isnot# v:null
+      call jobstop(s:jobid)
+      if bufexists(s:preview_buf_nr)
+          execute "bd! " . s:preview_buf_nr
       endif
-      sleep 1m
-      let c += 1
-    endwhile
-    redraw
+    endif
+  else
+    let s:jobid = term_getjob(bufnr('%'))
+    if s:jobid isnot# v:null
+      call job_stop(s:jobid)
+      let c = 0
+      while job_status(s:jobid) is# 'run'
+        if c > 5
+          call s:echo_err('stop job is timeout')
+          return
+        endif
+        sleep 1m
+        let c += 1
+      endwhile
+      redraw
+    endif
   endif
 endfunction
 
@@ -101,13 +112,21 @@ function! preview_markdown#preview(...) abort
   let cmd = printf("%s %s", parser, tmp)
 
   if has('nvim')
-    execute opencmd
-
     let opt = {
       \ 'on_exit': function('s:remove_tmp_on_nvim', [tmp])
       \ }
 
-    let s:preview_buf_nr = termopen(cmd, opt)
+    if bufexists(s:preview_buf_nr)
+      let winid = bufwinid(s:preview_buf_nr)
+      if winid isnot# -1
+        call win_gotoid(winid)
+      endif
+    endif
+
+    call s:stop_job()
+    execute opencmd
+    let s:preview_job_id = termopen(cmd, opt)
+    let s:preview_buf_nr = bufnr('$')
   else
     let opt = {
           \ 'hidden': 1,

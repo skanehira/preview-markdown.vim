@@ -76,7 +76,6 @@ g:preview_markdown_parser			*g:preview_markdown_parser*
 g:preview_markdown_auto_update			*g:preview_markdown_auto_update*
 	If you want to auto update preview window
 	when you write to buffer, please set value to 1.
-	NOTE: This unstill support Neovim.
 
 ==============================================================================
 TODO						*preview_markdown-todo*
