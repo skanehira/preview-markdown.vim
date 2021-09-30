@@ -23,7 +23,7 @@ endfunction
 
 function! s:stop_job() abort
   let s:jobid = term_getjob(bufnr('%'))
-  if s:jobid isnot# v:null
+  if ((s:jobid isnot# v:null) && (s:jobid !=# 'no process'))
     call job_stop(s:jobid)
     let c = 0
     while job_status(s:jobid) is# 'run'
