@@ -28,7 +28,7 @@ function! s:stop_job() abort
     if s:jobid isnot# v:null
       call jobstop(s:jobid)
       if bufexists(s:preview_buf_nr)
-          execute "bd! " . s:preview_buf_nr
+          execute "bw! " . s:preview_buf_nr
       endif
     endif
   else
