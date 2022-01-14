@@ -1,4 +1,5 @@
 # preview-markdown.vim
+# This plugin is no longer to develop. If you want to use, you can fork and improve it yourself
 This is vim plugin that can preview markdown in Vim terminal.
 
 ![](https://i.imgur.com/ME5HBWP.png)
